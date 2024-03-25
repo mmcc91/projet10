@@ -114,15 +114,19 @@ const Page = () => {
       </div>
     </main>
     <footer className="row">
-      <div className="col presta">
-        <h3>Notre derniére prestation</h3>
-        <EventCard
-          imageSrc={last?.cover}
-          title={last?.title}
-          date={new Date(last?.date)}
-          small
-          label="boom"
-        />
+    <div className="col presta">
+        <h3>Notre derniére prestation</h3> 
+        {/* ce titre sera toujours afficher mmeme si il ny pas dimage apres */}
+
+        { last && ( // si last existe ,Cela permet d'éviter les erreurs telles que "Cannot read properties of undefined" en vérifiant d'abord si last est défini avant de l'utiliser dans le composant 
+            <EventCard
+              imageSrc={last.cover}
+              title={last.title}
+              date={new Date(last.date)}
+              small
+              label={last.type} // type à la place de boom
+            />
+        )}
       </div>
       <div className="col contact">
         <h3>Contactez-nous</h3>
