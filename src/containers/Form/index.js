@@ -34,7 +34,8 @@ const Form = ({ onSuccess, onError }) => {
             onChange={() => null}
             label="Personel / Entreprise"
             type="large"
-            titleEmpty
+            titleEmpty required 
+            // ajout required 
           />
           <Field placeholder="" label="Email" />
           <Button type={BUTTON_TYPES.SUBMIT} disabled={sending}>
@@ -45,7 +46,8 @@ const Form = ({ onSuccess, onError }) => {
           <Field
             placeholder="message"
             label="Message"
-            type={FIELD_TYPES.TEXTAREA}
+            type={FIELD_TYPES.TEXTAREA}  required 
+            // ajout required 
           />
         </div>
       </div>

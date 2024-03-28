@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import EventCard from "../../components/EventCard";
 import Select from "../../components/Select";
@@ -8,83 +7,65 @@ import ModalEvent from "../ModalEvent";
 
 import "./style.css";
 
+const PER_PAGE = 9;
+
 const EventList = () => {
   const { data, error } = useData();
   const [type, setType] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginate] = useState(9);
 
-  // Tri par ordre décroissants des events
-  const byDateEvents = data?.events.sort((evtA, evtB) =>
-    new Date(evtA.date) > new Date(evtB.date) ? - 1 : 1
-  );
-  
-  const filteredEvents = (data?.events || [])
-  // Fonctionnement du filtre des events
-  ?.filter((event) => type === null ? event : event.type === type)
-  ?.filter((event, index) => {
-    if ((currentPage - 1) * paginate <= index && currentPage * paginate > index) {
-      return true;
-    }
-    return false;}
-  );
 
-  // Tracker type
-  // console.log(`type: ${type}`)
-  // Tracker du nombre d'éléments affichés sur la page après filtre
-  // console.log(`filteredEvents:  ${filteredEvents.length}`)
 
-  const changeType = (evtType, ) => {
+  // Filtrer les événements en fonction du type sélectionné
+  const filteredEvents = data?.events.filter((event) => type === null || event.type === type);
+
+  // Calculer le nombre total de pages pour la pagination
+  const pageNumber = Math.ceil((filteredEvents?.length || 0) / PER_PAGE);
+
+  // Liste des types d'événements disponibles
+  const typeList = new Set(data?.events.map((event) => event.type));
+
+  // Gérer le changement de type d'événement
+  const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
-    // Tracker evtType
-    // console.log(`evtType : ${evtType}`) 
   };
-
-  const pageNumber = Math.floor((filteredEvents?.length || 0) / paginate) +1
-  const typeList = new Set(data?.events.map((event) => event.type));
 
   return (
     <>
       {error && <div>An error occured</div>}
 
-      {byDateEvents === null ? (
-      
-      // {data === null ? (
-        "loading"
-      ) : (
-        <>
-          <h3 className="SelectTitle">Catégories</h3>
-          <Select
-            selection={Array.from(typeList)}
-            onChange={(value) => (value ? changeType(value) : changeType(null))}
-          />
-          <div id="events" className="ListContainer">
-            {filteredEvents
-            ?.map((event) => (
-              <Modal key={event.id} Content={<ModalEvent event={event} />}>
-                {({ setIsOpened }) => (
-                  <EventCard
-                    onClick={() => setIsOpened(true)}
-                    imageSrc={event.cover}
-                    title={event.title}
-                    date={new Date(event.date)}
-                    label={event.type}
-                  />
-                )}
-              </Modal>
-            ))}
-          </div>
-          <div className="Pagination">
-            {[...Array(pageNumber || 0)].map((_, n) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <a key={n} href="#events" onClick={() => setCurrentPage(n + 1)}>
-                {n + 1}
-              </a>
-            ))}
-          </div>
-        </>
-      )}
+      <h3 className="SelectTitle">Catégories</h3>
+      <Select
+        selection={["Tous", ...Array.from(typeList)]}
+        onChange={(value) => changeType(value === "Tous" ? null : value)}
+      />
+
+      <div id="events" className="ListContainer">
+        {filteredEvents
+          ?.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
+          .map((event) => (
+            <Modal key={event.id} Content={<ModalEvent event={event} />}>
+              {({ setIsOpened }) => (
+                <EventCard
+                  onClick={() => setIsOpened(true)}
+                  imageSrc={event.cover}
+                  title={event.title}
+                  date={new Date(event.date)}
+                  label={event.type}
+                />
+              )}
+            </Modal>
+          ))}
+      </div>
+
+      <div className="Pagination">
+        {[...Array(pageNumber)].map((_, index) => (
+          <button key={filteredEvents[index].id} type="button" onClick={() => setCurrentPage(index + 1)}>
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </>
   );
 };

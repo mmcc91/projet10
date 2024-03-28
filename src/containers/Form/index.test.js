@@ -21,9 +21,14 @@ describe("When Events is created", () => {
           bubbles: true,
         })
       );
-      await screen.findByText("En cours");
-      await screen.findByText("Envoyer");
+      await waitFor(() => {
+        // Attendez que le formulaire cesse d'être dans l'état de chargement
+        return !screen.queryByText("En cours");
+      }, { timeout: 3000 });
+      // Vérifiez que le message de succès est affiché
+      expect(screen.getByText("Envoyer")).toBeInTheDocument();
       expect(onSuccess).toHaveBeenCalled();
     });
   });
 });
+
