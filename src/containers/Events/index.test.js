@@ -21,7 +21,6 @@ const data = {
         "1 site web dédié",
       ],
     },
-
     {
       id: 2,
       type: "forum",
@@ -38,72 +37,57 @@ const data = {
 };
 
 describe("When Events is created", () => {
-  it("a list of event card is displayed", async () => {
+  beforeEach(() => {
     api.loadData = jest.fn().mockReturnValue(data);
     render(
       <DataProvider>
         <Events />
       </DataProvider>
     );
-    await screen.findAllByText("avril"); // esssaie suite a discussion avec Krimo
   });
-  describe("and an error occured", () => {
-    it("an error message is displayed", async () => {
+
+  it("a list of event card is displayed", async () => {
+    await screen.findAllByText("avril");
+  });
+
+  describe("and an error occurred", () => {
+    beforeEach(() => {
       api.loadData = jest.fn().mockRejectedValue();
       render(
         <DataProvider>
           <Events />
         </DataProvider>
       );
-      expect(await screen.findByText("An error occured")).toBeInTheDocument();
+    });
+
+    it("an error message is displayed", async () => {
+      expect(await screen.findByText("An error occurred")).toBeInTheDocument();
     });
   });
-  describe("and we select a category", () => {
-    it.only("an filtered list is displayed", async () => {
-      api.loadData = jest.fn().mockReturnValue(data);
-      render(
-        <DataProvider>
-          <Events />
-        </DataProvider>
-      );
-      await screen.findByText("Forum #productCON");
-      fireEvent(
-        await screen.findByTestId("collapse-button-testid"),
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
-      fireEvent(
-        (await screen.findAllByText("soirée entreprise"))[0],
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
 
-      await screen.findByText("Conférence #productCON");
-      expect(screen.queryByText("Forum #productCON")).not.toBeInTheDocument();
+  describe("and we select a category", () => {
+    beforeEach(async () => {
+      await screen.findByText("Forum #productCON");
+      fireEvent.click(await screen.findByTestId("collapse-button-testid"));
+      fireEvent.click(
+        (await screen.findAllByText("soirée entreprise"))[0]
+      );
+    });
+
+    it("a filtered list is displayed", async () => {
+      expect(
+        screen.queryByText("Forum #productCON")
+      ).not.toBeInTheDocument();
+      expect(screen.getByText("Conférence #productCON")).toBeInTheDocument();
     });
   });
 
   describe("and we click on an event", () => {
+    beforeEach(async () => {
+      fireEvent.click(await screen.findByText("Conférence #productCON"));
+    });
+
     it("the event detail is displayed", async () => {
-      api.loadData = jest.fn().mockReturnValue(data);
-      render(
-        <DataProvider>
-          <Events />
-        </DataProvider>
-      );
-
-      fireEvent(
-        await screen.findByText("Conférence #productCON"),
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
-
       await screen.findByText("24-25-26 Février");
       await screen.findByText("1 site web dédié");
     });
