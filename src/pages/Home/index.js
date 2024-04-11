@@ -117,7 +117,6 @@ const Page = () => {
     <div className="col presta">
         <h3>Notre derniére prestation</h3> 
         {/* ce titre sera toujours afficher mmeme si il ny pas dimage apres */}
-
         { last && ( // si last existe ,Cela permet d'éviter les erreurs telles que "Cannot read properties of undefined" en vérifiant d'abord si last est défini avant de l'utiliser dans le composant 
             <EventCard
               imageSrc={last.cover}
