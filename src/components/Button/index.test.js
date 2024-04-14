@@ -4,6 +4,7 @@ import Button, { BUTTON_TYPES } from "./index";
 describe("When a button is created", () => {
   it("the button must include a title", () => {
     render(<Button title="my-button" type={BUTTON_TYPES.DEFAULT} />);
+
     const buttonElement = screen.getByTitle("my-button");
     expect(buttonElement).toBeInTheDocument();
   });

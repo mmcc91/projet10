@@ -13,7 +13,19 @@ import Modal from "../../containers/Modal";
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const {last} = useData()
+  // modification last/data
+  const { data } = useData();
+  // const pour trouver la prestation la plus récente
+  const last =
+    data && data.events && data.events.length > 0
+      ? data.events.reduce((latest, current) => {
+        // on compare les dates pour trouver la plus récente
+        const latestDate = new Date(latest.date);
+        const currentDate = new Date(current.date);
+        // si la date actuelle est plus récente que la date la plus récente, on retourne la date actuelle
+        return currentDate > latestDate ? current : latest;
+      })
+      : null;
   return <>
     <header>
       <Menu />
@@ -56,7 +68,7 @@ const Page = () => {
         <EventList />
       </section>
       <section className="PeoplesContainer">
-        <h2 className="Title"id="equipe">Notre équipe</h2>
+        <h2 className="Title" id="equipe">Notre équipe</h2>
         <p>Une équipe d’experts dédiés à l’ogranisation de vos événements</p>
         <div className="ListContainer">
           <PeopleCard
@@ -114,17 +126,17 @@ const Page = () => {
       </div>
     </main>
     <footer className="row">
-    <div className="col presta">
-        <h3>Notre derniére prestation</h3> 
+      <div className="col presta">
+        <h3>Notre derniére prestation</h3>
         {/* ce titre sera toujours afficher mmeme si il ny pas dimage apres */}
-        { last && ( // si last existe ,Cela permet d'éviter les erreurs telles que "Cannot read properties of undefined" en vérifiant d'abord si last est défini avant de l'utiliser dans le composant 
-            <EventCard
-              imageSrc={last.cover}
-              title={last.title}
-              date={new Date(last.date)}
-              small
-              label={last.type} // type à la place de boom
-            />
+        {last && ( // si last existe ,Cela permet d'éviter les erreurs telles que "Cannot read properties of undefined" en vérifiant d'abord si last est défini avant de l'utiliser dans le composant 
+          <EventCard
+            imageSrc={last.cover}
+            title={last.title}
+            date={new Date(last.date)}
+            small
+            label={last.type} // type à la place de boom
+          />
         )}
       </div>
       <div className="col contact">
