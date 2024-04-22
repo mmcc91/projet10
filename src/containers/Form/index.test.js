@@ -29,10 +29,10 @@ describe("When Events is created", () => {
 
       await waitFor(() => {
         return !screen.queryByText("Envoyer");
-      }, {timeout: 3000})
+      }, { timeout: 3000 })
 
       // Check that onSuccess function is called
-      await waitFor(() => expect(onSuccess).toHaveBeenCalled(), {timeout: 5000})
+      await waitFor(() => expect(onSuccess).toHaveBeenCalled(), { timeout: 5000 })
     });
 
   });
