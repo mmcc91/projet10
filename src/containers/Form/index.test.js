@@ -26,7 +26,7 @@ describe("When Events is created", () => {
         return !screen.queryByText("En cours");
       }, { timeout: 3000 });
       // Vérifiez que le message de succès est affiché
-      expect(screen.getByText("Envoyer")).toBeInTheDocument();
+      await screen.findByText("Envoyer");
       // Check that onSuccess function is called
       expect(onSuccess).toHaveBeenCalled();
     });
