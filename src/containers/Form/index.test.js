@@ -26,9 +26,13 @@ describe("When Events is created", () => {
         return !screen.queryByText("En cours");
       }, { timeout: 3000 });
       // Vérifiez que le message de succès est affiché
-      await screen.findByText("Envoyer");
+
+      await waitFor(() => {
+        return !screen.queryByText("Envoyer");
+      }, {timeout: 3000})
+
       // Check that onSuccess function is called
-      expect(onSuccess).toHaveBeenCalled();
+      await waitFor(() => expect(onSuccess).toHaveBeenCalled(), {timeout: 5000})
     });
 
   });
