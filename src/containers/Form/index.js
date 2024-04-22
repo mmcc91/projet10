@@ -1,3 +1,4 @@
+
 import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import Field, { FIELD_TYPES } from "../../components/Field";
@@ -16,6 +17,8 @@ const Form = ({ onSuccess, onError }) => {
       try {
         await mockContactApi();
         setSending(false);
+        onSuccess()
+        //ajout onscussess
       } catch (err) {
         setSending(false);
         onError(err);
